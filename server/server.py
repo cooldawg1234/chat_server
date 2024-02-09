@@ -2,17 +2,23 @@ import socket
 
 host = ''
 port = 12000
-with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-	try:
-		s.bind((host, port))
-		s.listen(2)
-		addies = set()
-		print("Serving up ")
-		while 1:
-			a = s.accept()
-			if a:
-				addies.add(a[0])
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind((host, port))
+    s.settimeout(1)
+    print("Starting Chat Server")
+    s.listen(2)
+    addies = set()
+    while True:
+        try:
+            connection, address = s.accept()
+            print(f"{address} Connected.")
+            addies.add(connection)
+            message = connection.recv(2048)
+            message = message.decode()
+            print(f"{message} from {address}")
+        except socket.timeout:
+               continue
+        except KeyboardInterrupt:
+             break
+        
 
-				
-	except Exception as e:
-		pass

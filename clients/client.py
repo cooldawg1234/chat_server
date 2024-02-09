@@ -4,11 +4,18 @@ import time
 address = 'localhost'
 port = 12000
 
-with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as cs:
+name = "Oumar"
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as cs:
     try:
         cs.connect((address, port))
-        cs.settimeout(1)
-        message = str(input("You: "))
-        cs.send(message.encode())
+        cs.send(f"{name}".encode())
+        print("Connected to the server. CTRL + C to exit.")
+        while True:
+            try:
+                message = str(input(f"{name}: "))
+                cs.send(message.encode())
+            except KeyboardInterrupt:
+                break
     except:
-        pass
+        print("Connection Failed")
